@@ -1,0 +1,177 @@
+BL51 BANKED LINKER/LOCATER V6.22                                                        06/09/2019  11:28:26  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+D:\EXE\C51+KEIL4完美版\C51\BIN\BL51.EXE STARTUP.obj, .\LatticeLed3-Basketball.obj TO Exam RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  STARTUP.obj (?C_STARTUP)
+  .\LatticeLed3-Basketball.obj (LATTICELED3_BASKETBALL)
+  D:\EXE\C51+KEIL4完美版\C51\LIB\C51S.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  Exam (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0003H     UNIT         ?DT?LATTICELED3_BASKETBALL
+            IDATA   000BH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+                    0003H     0008H                  *** GAP ***
+            CODE    000BH     0003H     ABSOLUTE     
+            CODE    000EH     00DBH     UNIT         ?PR?INTERRUPTTIMER?LATTICELED3_BASKETBALL
+            CODE    00E9H     008CH     UNIT         ?C_C51STARTUP
+            CODE    0175H     008AH     UNIT         ?CO?LATTICELED3_BASKETBALL
+            CODE    01FFH     0015H     UNIT         ?PR?MAIN?LATTICELED3_BASKETBALL
+            CODE    0214H     000AH     UNIT         ?C_INITSEG
+
+
+
+OVERLAY MAP OF MODULE:   Exam (?C_STARTUP)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?LATTICELED3_BASKETBALL
+  +--> ?C_INITSEG
+
+*** NEW ROOT ***************************************************
+
+?PR?INTERRUPTTIMER?LATTICELED3_BASKET...
+  +--> ?CO?LATTICELED3_BASKETBALL
+
+
+
+SYMBOL TABLE OF MODULE:  Exam (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+BL51 BANKED LINKER/LOCATER V6.22                                                      06/09/2019  11:28:26  PAGE 2
+
+
+  -------         MODULE        ?C_STARTUP
+  C:00E9H         SEGMENT       ?C_C51STARTUP
+  I:000BH         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:00ECH         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0100H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:00E9H         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         126
+  C:00E9H         LINE#         133
+  C:00EBH         LINE#         134
+  C:00ECH         LINE#         135
+  C:00EDH         LINE#         136
+  C:00EFH         LINE#         185
+  C:00F2H         LINE#         196
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        LATTICELED3_BASKETBALL
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:0090H         PUBLIC        P1
+  D:00B0H         PUBLIC        P3
+  C:0175H         PUBLIC        image
+  B:00A8H.7       PUBLIC        EA
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  C:01FFH         PUBLIC        main
+  D:0098H         PUBLIC        SCON
+  D:0089H         PUBLIC        TMOD
+  D:0088H         PUBLIC        TCON
+  B:00A8H.1       PUBLIC        ET0
+  B:0090H.0       PUBLIC        ADDR0
+  D:008CH         PUBLIC        TH0
+  B:0090H.1       PUBLIC        ADDR1
+  B:0090H.2       PUBLIC        ADDR2
+  B:0090H.3       PUBLIC        ADDR3
+  D:008AH         PUBLIC        TL0
+  B:0088H.4       PUBLIC        TR0
+  C:000EH         PUBLIC        InterruptTimer
+  D:00C8H         PUBLIC        T2CON
+BL51 BANKED LINKER/LOCATER V6.22                                                      06/09/2019  11:28:26  PAGE 3
+
+
+  B:0090H.4       PUBLIC        ENLED
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          MAIN
+  C:01FFH         LINE#         21
+  C:01FFH         LINE#         22
+  C:01FFH         LINE#         23
+  C:0201H         LINE#         24
+  C:0203H         LINE#         25
+  C:0205H         LINE#         26
+  C:0208H         LINE#         27
+  C:020BH         LINE#         28
+  C:020EH         LINE#         29
+  C:0210H         LINE#         30
+  C:0212H         LINE#         31
+  -------         ENDPROC       MAIN
+  -------         PROC          INTERRUPTTIMER
+  -------         DO            
+  D:0008H         SYMBOL        i
+  D:0009H         SYMBOL        tmr
+  D:000AH         SYMBOL        index
+  -------         ENDDO         
+  C:000EH         LINE#         33
+  C:001BH         LINE#         40
+  C:001EH         LINE#         41
+  C:0021H         LINE#         42
+  C:0024H         LINE#         43
+  C:004DH         LINE#         44
+  C:004DH         LINE#         45
+  C:005CH         LINE#         46
+  C:006BH         LINE#         47
+  C:007AH         LINE#         48
+  C:0089H         LINE#         49
+  C:0098H         LINE#         50
+  C:00A7H         LINE#         51
+  C:00B6H         LINE#         52
+  C:00C7H         LINE#         53
+  C:00C7H         LINE#         54
+  C:00C7H         LINE#         55
+  C:00C9H         LINE#         56
+  C:00D0H         LINE#         57
+  C:00D0H         LINE#         58
+  C:00D3H         LINE#         59
+  C:00D5H         LINE#         61
+  C:00DBH         LINE#         63
+  C:00DBH         LINE#         64
+  C:00DEH         LINE#         66
+  C:00DEH         LINE#         67
+  C:00DEH         LINE#         68
+  -------         ENDPROC       INTERRUPTTIMER
+  -------         ENDMOD        LATTICELED3_BASKETBALL
+
+Program Size: data=12.0 xdata=0 code=534
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

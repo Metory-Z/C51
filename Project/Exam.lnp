@@ -1,0 +1,4 @@
+"STARTUP.obj",
+".\LatticeLed3-Basketball.obj" 
+TO "Exam" 
+RAMSIZE(256) 
