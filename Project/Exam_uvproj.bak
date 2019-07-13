@@ -352,9 +352,9 @@
               <FilePath>.\STARTUP.A51</FilePath>
             </File>
             <File>
-              <FileName>LedDisplay3-动态显示_中断.c</FileName>
+              <FileName>LatticeLed3-Basketball.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\LedDisplay3-动态显示_中断.c</FilePath>
+              <FilePath>..\LatticeLed3-Basketball.c</FilePath>
             </File>
           </Files>
         </Group>

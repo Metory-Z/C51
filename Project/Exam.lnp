@@ -1,4 +1,4 @@
 "STARTUP.obj",
-".\LatticeLed3-Basketball.obj" 
+".\practice.obj" 
 TO "Exam" 
 RAMSIZE(256) 

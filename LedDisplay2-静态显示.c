@@ -10,6 +10,7 @@ unsigned char code LedChar[]={
 	0xC0,0xF9,0xA4,0xB0,0x99,0x92,0x82,0xF8,
 	0x80,0x90,0x88,0x83,0xC6,0xA1,0x86,0x8E
 	};
+	// 使用code 来使数组存放在特定区域（rom）,否则会空间不够
 
 void main()
 {
@@ -23,7 +24,7 @@ void main()
 	ADDR0=0;
 	TMOD=0x01;
 	TH0=0xB8;
-	TL0=0x00;
+	TL0=0x00; // 0.02seconds
 	TR0=1;
 	
 	while(1)
@@ -40,9 +41,7 @@ void main()
 				P0=LedChar[sec];
 				sec++;
 				if(sec>6)
-				{
 					sec=0;
-				}
 			}
 		}
 	}

@@ -352,9 +352,9 @@
               <FilePath>.\STARTUP.A51</FilePath>
             </File>
             <File>
-              <FileName>LatticeLed3-Basketball.c</FileName>
+              <FileName>practice.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\LatticeLed3-Basketball.c</FilePath>
+              <FilePath>..\practice.c</FilePath>
             </File>
           </Files>
         </Group>

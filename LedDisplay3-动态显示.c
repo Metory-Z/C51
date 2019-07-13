@@ -24,7 +24,7 @@ void main()
 	ADDR3=1;
 	TMOD=0x01;
 	TH0=0xFC;
-	TL0=0x67;
+	TL0=0x67; // 1ms
 	TR0=1;
 	
 	while(1)
@@ -45,6 +45,7 @@ void main()
 				LedBuff[3]=LedChar[sec/1000%10];
 				LedBuff[4]=LedChar[sec/10000%10];
 				LedBuff[5]=LedChar[sec/100000%10];
+				// 1s 计算一次
 			}
 			if(i==0)
 			{ADDR2=0;ADDR1=0;ADDR0=0;i++;P0=LedBuff[0];}

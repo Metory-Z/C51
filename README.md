@@ -6,6 +6,6 @@
 
 ## LedDisplay 七段数码管 P65 P73 P79
 
-## LatticeLed 点阵Led P87 P97 
+## LatticeLed 点阵Led P87 P97
 
 ## Key 按键
