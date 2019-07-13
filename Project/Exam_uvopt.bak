@@ -199,7 +199,7 @@
   <AlienFiles>
     <PathWithFilename>D:\Py\51\LatticeLed-点亮8个数码管.c</PathWithFilename>
     <TopLine>16</TopLine>
-    <CurrentLine>20</CurrentLine>
+    <CurrentLine>37</CurrentLine>
     <Constant>0</Constant>
     <WindowPosition>
       <length>0</length>
@@ -1567,9 +1567,9 @@
       <Documents>
         <Doc>
           <Name>D:\Py\51\LatticeLed-点亮8个数码管.c</Name>
-          <ColumnNumber>16</ColumnNumber>
+          <ColumnNumber>38</ColumnNumber>
           <TopLine>16</TopLine>
-          <CurrentLine>20</CurrentLine>
+          <CurrentLine>37</CurrentLine>
         </Doc>
         <Doc>
           <Name>..\LatticeLed3-Basketball.c</Name>
