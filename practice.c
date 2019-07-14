@@ -130,7 +130,7 @@ void KeyDriver()
                 {
                     KeyAction(KeyCodeMap[i][j]);
                 }
-                backup[i][j] == KeySta[i][j];
+                backup[i][j] = KeySta[i][j];
             }
         }
     }

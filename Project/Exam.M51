@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22                                                        07/14/2019  23:40:00  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22                                                        07/14/2019  23:48:43  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
@@ -37,12 +37,12 @@ LINK MAP OF MODULE:  Exam (?C_STARTUP)
             CODE    01FEH     00D0H     UNIT         ?PR?_KEYACTION?PRACTICE
             CODE    02CEH     008CH     UNIT         ?C_C51STARTUP
             CODE    035AH     007AH     UNIT         ?PR?_SHOWNUMBER?PRACTICE
-            CODE    03D4H     0061H     UNIT         ?PR?LEDSCAN?PRACTICE
-            CODE    0435H     0059H     UNIT         ?PR?KEYDRIVER?PRACTICE
-            CODE    048EH     0051H     UNIT         ?C_INITSEG
-            CODE    04DFH     0024H     UNIT         ?PR?INTERRUPTTIMER0?PRACTICE
-            CODE    0503H     0020H     UNIT         ?CO?PRACTICE
-            CODE    0523H     001FH     UNIT         ?PR?MAIN?PRACTICE
+            CODE    03D4H     0073H     UNIT         ?PR?KEYDRIVER?PRACTICE
+            CODE    0447H     0061H     UNIT         ?PR?LEDSCAN?PRACTICE
+            CODE    04A8H     0051H     UNIT         ?C_INITSEG
+            CODE    04F9H     0024H     UNIT         ?PR?INTERRUPTTIMER0?PRACTICE
+            CODE    051DH     0020H     UNIT         ?CO?PRACTICE
+            CODE    053DH     001FH     UNIT         ?PR?MAIN?PRACTICE
 
 
 
@@ -59,7 +59,7 @@ SEGMENT                                DATA_GROUP
 ?PR?MAIN?PRACTICE                    -----    -----
   +--> ?CO?PRACTICE
   +--> ?PR?KEYDRIVER?PRACTICE
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/14/2019  23:40:00  PAGE 2
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/14/2019  23:48:43  PAGE 2
 
 
 
@@ -119,7 +119,7 @@ SYMBOL TABLE OF MODULE:  Exam (?C_STARTUP)
   C:02D4H         LINE#         185
   C:02D7H         LINE#         196
   -------         ENDMOD        ?C_STARTUP
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/14/2019  23:40:00  PAGE 3
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/14/2019  23:48:43  PAGE 3
 
 
 
@@ -130,21 +130,21 @@ SYMBOL TABLE OF MODULE:  Exam (?C_STARTUP)
   D:00A0H         PUBLIC        P2
   D:00B0H         PUBLIC        P3
   B:00A8H.7       PUBLIC        EA
-  C:04DFH         PUBLIC        InterruptTimer0
+  C:04F9H         PUBLIC        InterruptTimer0
   C:01FEH         PUBLIC        _KeyAction
   D:00A8H         PUBLIC        IE
   C:035AH         PUBLIC        _ShowNumber
-  C:0503H         PUBLIC        LedChar
+  C:051DH         PUBLIC        LedChar
   D:00B8H         PUBLIC        IP
-  C:0435H         PUBLIC        KeyDriver
+  C:03D4H         PUBLIC        KeyDriver
   D:0032H         PUBLIC        LedBuff
-  C:03D4H         PUBLIC        LedScan
-  C:0523H         PUBLIC        main
+  C:0447H         PUBLIC        LedScan
+  C:053DH         PUBLIC        main
   C:012BH         PUBLIC        KeyScan
   D:0098H         PUBLIC        SCON
   D:0089H         PUBLIC        TMOD
   D:0088H         PUBLIC        TCON
-  C:0513H         PUBLIC        KeyCodeMap
+  C:052DH         PUBLIC        KeyCodeMap
   B:00A8H.1       PUBLIC        ET0
   B:0090H.0       PUBLIC        ADDR0
   D:008CH         PUBLIC        TH0
@@ -166,24 +166,24 @@ SYMBOL TABLE OF MODULE:  Exam (?C_STARTUP)
   B:00A0H.7       PUBLIC        KEY_IN_4
   D:00D0H         PUBLIC        PSW
   -------         PROC          MAIN
-  C:0523H         LINE#         43
-  C:0523H         LINE#         44
-  C:0523H         LINE#         45
-  C:0525H         LINE#         46
-  C:0527H         LINE#         47
-  C:0529H         LINE#         48
-  C:052CH         LINE#         49
-  C:052FH         LINE#         50
-  C:0532H         LINE#         51
-  C:0534H         LINE#         52
-  C:0536H         LINE#         53
-  C:053DH         LINE#         55
-  C:053DH         LINE#         56
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/14/2019  23:40:00  PAGE 4
+  C:053DH         LINE#         43
+  C:053DH         LINE#         44
+  C:053DH         LINE#         45
+  C:053FH         LINE#         46
+  C:0541H         LINE#         47
+  C:0543H         LINE#         48
+  C:0546H         LINE#         49
+  C:0549H         LINE#         50
+  C:054CH         LINE#         51
+  C:054EH         LINE#         52
+  C:0550H         LINE#         53
+  C:0557H         LINE#         55
+  C:0557H         LINE#         56
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/14/2019  23:48:43  PAGE 4
 
 
-  C:053DH         LINE#         57
-  C:0540H         LINE#         58
+  C:0557H         LINE#         57
+  C:055AH         LINE#         58
   -------         ENDPROC       MAIN
   -------         PROC          _SHOWNUMBER
   D:004BH         SYMBOL        num
@@ -239,7 +239,7 @@ SYMBOL TABLE OF MODULE:  Exam (?C_STARTUP)
   C:02B1H         LINE#         107
   C:02B1H         LINE#         108
   C:02BAH         LINE#         109
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/14/2019  23:40:00  PAGE 5
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/14/2019  23:48:43  PAGE 5
 
 
   C:02C2H         LINE#         110
@@ -252,23 +252,23 @@ SYMBOL TABLE OF MODULE:  Exam (?C_STARTUP)
   D:0049H         SYMBOL        j
   D:0010H         SYMBOL        backup
   -------         ENDDO         
-  C:0435H         LINE#         115
-  C:0435H         LINE#         116
-  C:0435H         LINE#         123
-  C:0438H         LINE#         124
-  C:0438H         LINE#         125
-  C:043BH         LINE#         126
-  C:043BH         LINE#         127
-  C:0458H         LINE#         128
-  C:0458H         LINE#         129
-  C:045BH         LINE#         130
-  C:045BH         LINE#         131
-  C:047BH         LINE#         132
-  C:047BH         LINE#         133
-  C:047BH         LINE#         134
-  C:047BH         LINE#         135
-  C:0484H         LINE#         136
-  C:048DH         LINE#         137
+  C:03D4H         LINE#         115
+  C:03D4H         LINE#         116
+  C:03D4H         LINE#         123
+  C:03D7H         LINE#         124
+  C:03D7H         LINE#         125
+  C:03DAH         LINE#         126
+  C:03DAH         LINE#         127
+  C:03F7H         LINE#         128
+  C:03F7H         LINE#         129
+  C:03FAH         LINE#         130
+  C:03FAH         LINE#         131
+  C:041AH         LINE#         132
+  C:041AH         LINE#         133
+  C:0434H         LINE#         134
+  C:0434H         LINE#         135
+  C:043DH         LINE#         136
+  C:0446H         LINE#         137
   -------         ENDPROC       KEYDRIVER
   -------         PROC          KEYSCAN
   -------         DO            
@@ -299,7 +299,7 @@ SYMBOL TABLE OF MODULE:  Exam (?C_STARTUP)
   C:01F9H         LINE#         172
   C:01FDH         LINE#         173
   C:01FDH         LINE#         174
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/14/2019  23:40:00  PAGE 6
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/14/2019  23:48:43  PAGE 6
 
 
   C:01FDH         LINE#         175
@@ -308,28 +308,28 @@ SYMBOL TABLE OF MODULE:  Exam (?C_STARTUP)
   -------         DO            
   D:0031H         SYMBOL        i
   -------         ENDDO         
-  C:03D4H         LINE#         177
-  C:03D4H         LINE#         178
-  C:03D4H         LINE#         181
-  C:03D7H         LINE#         182
-  C:03ECH         LINE#         183
-  C:03ECH         LINE#         184
-  C:03F8H         LINE#         185
-  C:0404H         LINE#         186
-  C:0410H         LINE#         187
-  C:041CH         LINE#         188
-  C:0428H         LINE#         189
-  C:0434H         LINE#         190
-  C:0434H         LINE#         191
-  C:0434H         LINE#         192
+  C:0447H         LINE#         177
+  C:0447H         LINE#         178
+  C:0447H         LINE#         181
+  C:044AH         LINE#         182
+  C:045FH         LINE#         183
+  C:045FH         LINE#         184
+  C:046BH         LINE#         185
+  C:0477H         LINE#         186
+  C:0483H         LINE#         187
+  C:048FH         LINE#         188
+  C:049BH         LINE#         189
+  C:04A7H         LINE#         190
+  C:04A7H         LINE#         191
+  C:04A7H         LINE#         192
   -------         ENDPROC       LEDSCAN
   -------         PROC          INTERRUPTTIMER0
-  C:04DFH         LINE#         194
-  C:04ECH         LINE#         196
-  C:04EFH         LINE#         197
-  C:04F2H         LINE#         198
-  C:04F5H         LINE#         199
-  C:04F8H         LINE#         200
+  C:04F9H         LINE#         194
+  C:0506H         LINE#         196
+  C:0509H         LINE#         197
+  C:050CH         LINE#         198
+  C:050FH         LINE#         199
+  C:0512H         LINE#         200
   -------         ENDPROC       INTERRUPTTIMER0
   -------         ENDMOD        PRACTICE
 
@@ -341,5 +341,5 @@ SYMBOL TABLE OF MODULE:  Exam (?C_STARTUP)
   C:0099H         PUBLIC        ?C?ULDIV
   -------         ENDMOD        ?C?ULDIV
 
-Program Size: data=87.0 xdata=0 code=1338
+Program Size: data=87.0 xdata=0 code=1364
 LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
