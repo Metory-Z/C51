@@ -16,30 +16,33 @@ unsigned char code LedChar[] =
 	    0x80,0x90,0x88,0x83,0xC6,0xA1,0x86,0x8E
 	};
 
-void delay();
+bit KeySta = 1;
 
 void main()
 {
-    bit backup = 1, keybuf = 1;
+    bit backup = 1;
     unsigned char cnt = 0;
 
+    EA = 1;
     ENLED = 0;
     ADDR3 = 1;
     ADDR2 = 0;
     ADDR1 = 0;
     ADDR0 = 0;
+    TMOD = 0x01;
+    TH0 = 0xF8;
+    TL0 = 0xCD;// 2ms
+    ET0 = 1;
+    TR0 = 1;// 启动T0
+
     P2 = 0xF7;
     P0 = LedChar[cnt];
 
     while (1)
     {
-        keybuf = KEY4;
-        if (keybuf != backup)
+        if (KeySta != backup)
         {
-            delay();
-            if (keybuf == KEY4)// 是否有必要判断
-            {
-                if (backup == 0)
+            if (backup == 0)
                 {
                     cnt++;
                     if (cnt >= 10)
@@ -49,13 +52,26 @@ void main()
                     P0 = LedChar[cnt];
                 }
                 backup = KeySta;
-            }
         }
     } 
 }
 
-void delay()
+void InterruptTimer0() interrupt 1
 {
-    unsigned int i =1000;
-    while (i--);
+    static unsigned char keybuf = 0xFF;
+
+    TH0 = 0xF8;
+    TL0 = 0xCD;
+    keybuf = (keybuf<<1)|KEY4;
+    // 将本次扫描值放在最低位
+    // 比如keybuf == 11
+    // 如果KEY4 == 1
+    // keybuf = 110|001 = 111
+    // |运算，有1得1
+
+    if (keybuf == 0x00)
+        KeySta = 0;// 按键按下
+    else if (keybuf == 0xFF)
+        KeySta = 1;// 按键弹起
+    // 8次扫描，16ms后才能判断是否状态确定
 }

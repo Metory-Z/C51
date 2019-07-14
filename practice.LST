@@ -1,4 +1,4 @@
-C51 COMPILER V9.00   PRACTICE                                                              07/14/2019 12:14:28 PAGE 1   
+C51 COMPILER V9.00   PRACTICE                                                              07/14/2019 20:18:33 PAGE 1   
 
 
 C51 COMPILER V9.00, COMPILATION OF MODULE PRACTICE
@@ -15,73 +15,215 @@ line level    source
    5          sbit ADDR2=P1^2;
    6          sbit ADDR3=P1^3;
    7          sbit ENLED=P1^4;
-   8          sbit KEY1=P2^4;
-   9          sbit KEY2=P2^5;
-  10          sbit KEY3=P2^6;
-  11          sbit KEY4=P2^7;
-  12          
-  13          unsigned char code LedChar[] =
-  14              {
-  15                      0xC0,0xF9,0xA4,0xB0,0x99,0x92,0x82,0xF8,
-  16                      0x80,0x90,0x88,0x83,0xC6,0xA1,0x86,0x8E
-  17                  };
-  18          
-  19          void delay();
-  20          
-  21          void main()
-  22          {
-  23   1          bit backup = 1, keybuf = 1;
-  24   1          unsigned char cnt = 0;
-  25   1      
-  26   1          ENLED = 0;
-  27   1          ADDR3 = 1;
-  28   1          ADDR2 = 0;
-  29   1          ADDR1 = 0;
-  30   1          ADDR0 = 0;
-  31   1          P2 = 0xF7;
-  32   1          P0 = LedChar[cnt];
-  33   1      
-  34   1          while (1)
-  35   1          {
-  36   2              keybuf = KEY4;
-  37   2              if (keybuf != backup)
-  38   2              {
-  39   3                  delay();
-  40   3                  if (keybuf == KEY4)
-  41   3                  {
-  42   4                      if (backup == 0)
-  43   4                      {
-  44   5                          cnt++;
-  45   5                          if (cnt >= 10)
-  46   5                          {
-  47   6                              cnt = 0;
-  48   6                          }
-  49   5                          P0 = LedChar[cnt];
-  50   5                      }
-  51   4                      backup = keybuf;
-  52   4                  }
-  53   3              }
-  54   2          } 
-C51 COMPILER V9.00   PRACTICE                                                              07/14/2019 12:14:28 PAGE 2   
+   8          sbit KEY_IN_1=P2^4;
+   9          sbit KEY_IN_2=P2^5;
+  10          sbit KEY_IN_3=P2^6;
+  11          sbit KEY_IN_4=P2^7;
+  12          sbit KEY_OUT_1=P2^3;
+  13          sbit KEY_OUT_2=P2^2;
+  14          sbit KEY_OUT_3=P2^1;
+  15          sbit KEY_OUT_4=P2^0;
+  16          
+  17          unsigned char code LedChar[] =
+  18              {
+  19                      0xC0,0xF9,0xA4,0xB0,0x99,0x92,0x82,0xF8,
+  20                      0x80,0x90,0x88,0x83,0xC6,0xA1,0x86,0x8E
+  21                  };
+  22          
+  23          unsigned char LedBuff[6] =
+  24              {
+  25                      0xFF,0xFF,0xFF,0xFF,0xFF,0xFF
+  26                  };
+  27          
+  28          unsigned char code KeyCodeMap[4][4] =
+  29              {
+  30                  {0x31,0x32,0x33,0x26}, // 1,2,3,left
+  31                  {0x34,0x35,0x36,0x25}, // 4,5,6,up
+  32                  {0x37,0x38,0x39,0x28}, // 7,8,9,right
+  33                  {0x30,0x1B,0x0D,0x27}  // 0,Esc,Enter,down
+  34              };
+  35          
+  36          unsigned char KeySta[4][4] = 
+  37              {
+  38                  {1,1,1,1}, {1,1,1,1}, {1,1,1,1}, {1,1,1,1}
+  39              };
+  40          
+  41          void KeyDriver();
+  42          
+  43          void main()
+  44          {
+  45   1          EA = 1;
+  46   1          ENLED = 0;
+  47   1          ADDR3 = 1;
+  48   1          TMOD = 0x01;
+  49   1          TH0 = 0xFC;
+  50   1          TL0 = 0x67;// 1ms
+  51   1          ET0 = 1;
+  52   1          TR0 = 1;// 启动T0
+  53   1          LedBuff[0] = LedChar[0];// display 0
+  54   1      
+C51 COMPILER V9.00   PRACTICE                                                              07/14/2019 20:18:33 PAGE 2   
 
-  55   1      }
-  56          
-  57          void delay()
-  58          {
-  59   1          unsigned int i =1000;
-  60   1          while (i--);
-  61   1      }
+  55   1          while (1)
+  56   1          {
+  57   2              KeyDriver();
+  58   2          } 
+  59   1      }
+  60          
+  61          
+  62          void ShowNumber(unsigned long num)
+  63          {
+  64   1          signed char i;
+  65   1          unsigned char buf[6];
+  66   1      
+  67   1          for (i=0; i<6; i++)
+  68   1          {
+  69   2              buf[i] = num % 10;
+  70   2              num /= 10;
+  71   2          }
+  72   1          for (i=5; i>=1; i--)
+  73   1          {
+  74   2              if (buf[i] == 0)
+  75   2                  LedBuff[i] = 0xFF;
+  76   2              else
+  77   2                  break;   
+  78   2          }
+  79   1          for(; i>=0; i--)
+  80   1              LedBuff[i] = LedChar[buf[i]];
+  81   1      }
+  82          
+  83          void KeyAction(unsigned char keycode)
+  84          {
+  85   1          static unsigned long result = 0, addend = 0;
+  86   1      
+  87   1          if ((keycode>=0x30) && (keycode<=0x39))
+  88   1          {
+  89   2              addend = (addend*10) + (keycode-0x30);
+  90   2              ShowNumber(addend);
+  91   2          }
+  92   1          else if (keycode == 0x26)
+  93   1          {
+  94   2              result += addend;
+  95   2              addend = 0;
+  96   2              ShowNumber(result);
+  97   2          }
+  98   1          else if (keycode == 0x0D)
+  99   1          {
+ 100   2              result += addend;
+ 101   2              addend = 0;
+ 102   2              ShowNumber(result);
+ 103   2          }
+ 104   1          else if (keycode == 0x1B)
+ 105   1          {
+ 106   2              addend = 0;
+ 107   2              result = 0;
+ 108   2              ShowNumber(addend);
+ 109   2          }
+ 110   1      
+ 111   1      }
+ 112          
+ 113          void KeyDriver()
+ 114          {
+ 115   1          unsigned char i, j;
+ 116   1          unsigned char backup[4][4] = 
+C51 COMPILER V9.00   PRACTICE                                                              07/14/2019 20:18:33 PAGE 3   
+
+ 117   1          {
+ 118   1              {1,1,1,1}, {1,1,1,1}, {1,1,1,1}, {1,1,1,1}
+ 119   1          };
+ 120   1      
+ 121   1          for (i=0; i<4; i++)
+ 122   1          {
+ 123   2              for (j=0; j<4; j++)
+ 124   2              {
+ 125   3                  if (backup[i][j] != KeySta[i][j])
+ 126   3                  {
+ 127   4                      if (backup[i][j] != 0)
+ 128   4                      {
+ 129   5                          KeyAction(KeyCodeMap[i][j]);
+ 130   5                      }
+ 131   4                      backup[i][j] == KeySta[i][j];
+*** WARNING C275 IN LINE 131 OF ..\PRACTICE.C: expression with possibly no effect
+ 132   4                  }
+ 133   3              }
+ 134   2          }
+ 135   1      }
+ 136          
+ 137          void KeyScan()
+ 138          {
+ 139   1          unsigned char i;
+ 140   1          static unsigned char keyout = 0;
+ 141   1          static unsigned char keybuf[4][4] = 
+ 142   1          {
+ 143   1              {0xFF, 0xFF, 0xFF, 0xFF}, 
+ 144   1              {0xFF, 0xFF, 0xFF, 0xFF}, 
+ 145   1              {0xFF, 0xFF, 0xFF, 0xFF}, 
+ 146   1              {0xFF, 0xFF, 0xFF, 0xFF}
+ 147   1          };
+ 148   1      
+ 149   1          keybuf[keyout][0] = (keybuf[keyout][0]<<1) | KEY_IN_1;
+ 150   1          keybuf[keyout][1] = (keybuf[keyout][1]<<1) | KEY_IN_2;
+ 151   1          keybuf[keyout][2] = (keybuf[keyout][2]<<1) | KEY_IN_3;
+ 152   1          keybuf[keyout][3] = (keybuf[keyout][3]<<1) | KEY_IN_4; 
+ 153   1          
+ 154   1          for (i=0; i<4; i++)
+ 155   1          {
+ 156   2              if ((keybuf[keyout][i] & 0x0F) == 0x00)
+ 157   2                  KeySta[keyout][i] = 0;
+ 158   2              else if ((keybuf[keyout][i] & 0x0F) == 0x0F)
+ 159   2                  KeySta[keyout][i] = 1;
+ 160   2          }
+ 161   1          keyout++;
+ 162   1          keyout = keyout & 0x03;
+ 163   1          // 当keyout 等于4(100) 时，与0x03(011) 做与运算后，归零
+ 164   1          switch(keyout)
+ 165   1          {
+ 166   2              // 先扫描KeyIn，后切换KeyOut
+ 167   2              case 0: KEY_OUT_4 = 1; KEY_OUT_1 = 0;break;
+ 168   2              case 1: KEY_OUT_1 = 1; KEY_OUT_2 = 0;break;
+ 169   2              case 2: KEY_OUT_2 = 1; KEY_OUT_3 = 0;break;
+ 170   2              case 3: KEY_OUT_3 = 1; KEY_OUT_4 = 0;break;
+ 171   2              default: break;
+ 172   2          }
+ 173   1      }
+ 174          
+ 175          void LedScan()
+ 176          {
+ 177   1          static unsigned char i = 0;
+C51 COMPILER V9.00   PRACTICE                                                              07/14/2019 20:18:33 PAGE 4   
+
+ 178   1      
+ 179   1          P0 = 0xFF;
+ 180   1          switch (i)
+ 181   1          {
+ 182   2              case 0: ADDR2=0; ADDR1=0; ADDR0=0; i++; P0=LedBuff[0]; break;
+ 183   2              case 1: ADDR2=0; ADDR1=0; ADDR0=1; i++; P0=LedBuff[1]; break;
+ 184   2              case 2: ADDR2=0; ADDR1=1; ADDR0=0; i++; P0=LedBuff[2]; break;
+ 185   2              case 3: ADDR2=0; ADDR1=1; ADDR0=1; i++; P0=LedBuff[3]; break;
+ 186   2              case 4: ADDR2=1; ADDR1=0; ADDR0=0; i++; P0=LedBuff[4]; break;
+ 187   2              case 5: ADDR2=1; ADDR1=0; ADDR0=1; i=0; P0=LedBuff[5]; break;
+ 188   2              default: break;
+ 189   2          }
+ 190   1      }
+ 191          
+ 192          void InterruptTimer0() interrupt 1
+ 193          {
+ 194   1          TH0 = 0xFC;
+ 195   1          TL0 = 0x67;
+ 196   1          LedScan();
+ 197   1          KeyScan();
+ 198   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     94    ----
-   CONSTANT SIZE    =     16    ----
+   CODE SIZE        =    813    ----
+   CONSTANT SIZE    =     48    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----       1
+   DATA SIZE        =     48      30
    IDATA SIZE       =   ----    ----
-   BIT SIZE         =   ----       2
+   BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
 
 
-C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
