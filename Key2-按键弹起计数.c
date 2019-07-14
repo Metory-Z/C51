@@ -16,16 +16,14 @@ unsigned char code LedChar[] =
 	    0x80,0x90,0x88,0x83,0xC6,0xA1,0x86,0x8E
 	};
 
-void delay();
-
 void main()
 {
-    bit backup = 1, keybuf = 1;
+    bit backup = 1;// 位变量
     unsigned char cnt = 0;
 
     ENLED = 0;
     ADDR3 = 1;
-    ADDR2 = 0;
+    ADDR2 = 1;
     ADDR1 = 0;
     ADDR0 = 0;
     P2 = 0xF7;
@@ -33,29 +31,18 @@ void main()
 
     while (1)
     {
-        keybuf = KEY4;
-        if (keybuf != backup)
+        if (KEY4 != backup)
         {
-            delay();
-            if (keybuf == KEY4)
+            if (backup == 0)
             {
-                if (backup == 0)
+                cnt++;
+                if (cnt >= 10)
                 {
-                    cnt++;
-                    if (cnt >= 10)
-                    {
-                        cnt = 0;
-                    }
-                    P0 = LedChar[cnt];
+                    cnt = 0;
                 }
-                backup = keybuf;
+                P0 = LedChar[cnt];
             }
+            backup = KEY4;
         }
     } 
-}
-
-void delay()
-{
-    unsigned int i =1000;
-    while (i--);
 }
