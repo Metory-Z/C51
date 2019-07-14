@@ -1,18 +1,18 @@
 #include<reg52.h>
 
-sbit ADDR0=P1^0;
-sbit ADDR1=P1^1;
-sbit ADDR2=P1^2;
-sbit ADDR3=P1^3;
-sbit ENLED=P1^4;
-sbit KEY_IN_1=P2^4;
-sbit KEY_IN_2=P2^5;
-sbit KEY_IN_3=P2^6;
-sbit KEY_IN_4=P2^7;
-sbit KEY_OUT_1=P2^3;
-sbit KEY_OUT_2=P2^2;
-sbit KEY_OUT_3=P2^1;
-sbit KEY_OUT_4=P2^0;
+sbit ADDR0 = P1^0;
+sbit ADDR1 = P1^1;
+sbit ADDR2 = P1^2;
+sbit ADDR3 = P1^3;
+sbit ENLED = P1^4;
+sbit KEY_IN_1  = P2^4;
+sbit KEY_IN_2  = P2^5;
+sbit KEY_IN_3  = P2^6;
+sbit KEY_IN_4  = P2^7;
+sbit KEY_OUT_1 = P2^3;
+sbit KEY_OUT_2 = P2^2;
+sbit KEY_OUT_3 = P2^1;
+sbit KEY_OUT_4 = P2^0;
 
 unsigned char code LedChar[] =
     {
@@ -67,7 +67,7 @@ void ShowNumber(unsigned long num)
     for (i=0; i<6; i++)
     {
         buf[i] = num % 10;
-        num /= 10;
+        num = num / 10;
     }
     for (i=5; i>=1; i--)
     {
@@ -76,8 +76,10 @@ void ShowNumber(unsigned long num)
         else
             break;   
     }
-    for(; i>=0; i--)
+    for( ; i>=0; i--)
+    {
         LedBuff[i] = LedChar[buf[i]];
+    }
 }
 
 void KeyAction(unsigned char keycode)
@@ -113,7 +115,7 @@ void KeyAction(unsigned char keycode)
 void KeyDriver()
 {
     unsigned char i, j;
-    unsigned char backup[4][4] = 
+    static unsigned char backup[4][4] = 
     {
         {1,1,1,1}, {1,1,1,1}, {1,1,1,1}, {1,1,1,1}
     };
@@ -146,10 +148,10 @@ void KeyScan()
         {0xFF, 0xFF, 0xFF, 0xFF}
     };
 
-    keybuf[keyout][0] = (keybuf[keyout][0]<<1) | KEY_IN_1;
-    keybuf[keyout][1] = (keybuf[keyout][1]<<1) | KEY_IN_2;
-    keybuf[keyout][2] = (keybuf[keyout][2]<<1) | KEY_IN_3;
-    keybuf[keyout][3] = (keybuf[keyout][3]<<1) | KEY_IN_4; 
+    keybuf[keyout][0] = (keybuf[keyout][0] << 1) | KEY_IN_1;
+    keybuf[keyout][1] = (keybuf[keyout][1] << 1) | KEY_IN_2;
+    keybuf[keyout][2] = (keybuf[keyout][2] << 1) | KEY_IN_3;
+    keybuf[keyout][3] = (keybuf[keyout][3] << 1) | KEY_IN_4; 
     
     for (i=0; i<4; i++)
     {
