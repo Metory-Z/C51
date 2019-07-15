@@ -61,6 +61,7 @@ void main()
 
 void ShowNumber(unsigned long num)
 {
+    // 计算要显示的数字，高位前的0不显示
     signed char i;
     unsigned char buf[6];
 
@@ -84,6 +85,7 @@ void ShowNumber(unsigned long num)
 
 void KeyAction(unsigned char keycode)
 {
+    // 根据不同按键，执行加、清零等操作
     static unsigned long result = 0, addend = 0;
 
     if ((keycode>=0x30) && (keycode<=0x39))
@@ -114,6 +116,7 @@ void KeyAction(unsigned char keycode)
 
 void KeyDriver()
 {
+    // 判断哪个按键有动作,执行KeyAction()
     unsigned char i, j;
     static unsigned char backup[4][4] = 
     {
@@ -130,7 +133,7 @@ void KeyDriver()
                 {
                     KeyAction(KeyCodeMap[i][j]);
                 }
-                backup[i][j] == KeySta[i][j];
+                backup[i][j] = KeySta[i][j];
             }
         }
     }
@@ -138,6 +141,8 @@ void KeyDriver()
 
 void KeyScan()
 {
+    
+    // 获取4次扫描值，执行KeyDriver()
     unsigned char i;
     static unsigned char keyout = 0;
     static unsigned char keybuf[4][4] = 
@@ -176,6 +181,7 @@ void KeyScan()
 
 void LedScan()
 {
+    // 动态刷新屏幕显示数字
     static unsigned char i = 0;
 
     P0 = 0xFF;
