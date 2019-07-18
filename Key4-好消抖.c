@@ -45,7 +45,7 @@ void main()
             if (backup == 0)
                 {
                     cnt++;
-                    if (cnt >= 10)
+                      if (cnt >= 10)
                     {
                         cnt = 0;
                     }

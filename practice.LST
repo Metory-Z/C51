@@ -1,4 +1,4 @@
-C51 COMPILER V9.00   PRACTICE                                                              07/15/2019 22:53:05 PAGE 1   
+C51 COMPILER V9.00   PRACTICE                                                              07/18/2019 22:15:08 PAGE 1   
 
 
 C51 COMPILER V9.00, COMPILATION OF MODULE PRACTICE
@@ -10,216 +10,213 @@ line level    source
 
    1          #include<reg52.h>
    2          
-   3          sbit KEY_IN_1  = P2^4;
-   4          sbit KEY_IN_2  = P2^5;
-   5          sbit KEY_IN_3  = P2^6;
-   6          sbit KEY_IN_4  = P2^7;
-   7          sbit KEY_OUT_1 = P2^3;
-   8          sbit KEY_OUT_2 = P2^2;
-   9          sbit KEY_OUT_3 = P2^1;
-  10          sbit KEY_OUT_4 = P2^0;
-  11          
-  12          unsigned char code KeyCodeMap[4][4] =
-  13              {
-  14                  {0x31,0x32,0x33,0x26}, // 1,2,3,left
-  15                  {0x34,0x35,0x36,0x25}, // 4,5,6,up
-  16                  {0x37,0x38,0x39,0x28}, // 7,8,9,right
-  17                  {0x30,0x1B,0x0D,0x27}  // 0,Esc,Enter,down
-  18              };
-  19          
-  20          unsigned char KeySta[4][4] = 
-  21              {
-  22                  {1,1,1,1}, {1,1,1,1}, {1,1,1,1}, {1,1,1,1}
-  23              };
-  24          
-  25          unsigned long beats = 0;
-  26          
-  27          void KeyDriver();
-  28          
-  29          void main()
-  30          {
-  31   1          EA = 1;
-  32   1          TMOD = 0x01;
-  33   1          TH0 = 0xFC;
-  34   1          TL0 = 0x67;// 1ms
-  35   1          ET0 = 1;
-  36   1          TR0 = 1;// 启动T0
-  37   1      
-  38   1          while (1)
-  39   1          {
-  40   2              KeyDriver();
-  41   2          } 
-  42   1      }
-  43          
-  44          void StartMotor(signed long angle)
-  45          {
-  46   1          EA = 0;
-  47   1          beats = (angle * 4076) / 360;
-  48   1          EA = 1;
+   3          sbit ADDR3 = P1^3;
+   4          sbit ENLED = P1^4;
+   5          sbit KEY1=P2^4;
+   6          sbit KEY2=P2^5;
+   7          sbit KEY3=P2^6;
+   8          sbit KEY4=P2^7;
+   9          
+  10          unsigned char code LedChar[] = {
+  11                  0xC0,0xF9,0xA4,0xB0,0x99,0x92,0x82,0xF8,
+  12                  0x80,0x90,0x88,0x83,0xC6,0xA1,0x86,0x8E
+  13          };
+  14          unsigned char LedBuff[6] = {
+  15                  0xFF,0xFF,0xFF,0xFF,0xFF,0xFF
+  16          };
+  17          unsigned char KeySta[4]={
+  18              1,1,1,1
+  19          };
+  20          
+  21          bit StopwatchRunning = 0;
+  22          bit StopwatchRefresh = 1;
+  23          unsigned char DecimalPart = 0;// 小数部分
+  24          unsigned int IntegerPart = 0;
+  25          unsigned char T0RH = 0;
+  26          unsigned char T0RL = 0;
+  27          
+  28          void ConfigTimer0(unsigned int ms);
+  29          void StopwatchDisplay();
+  30          void KeyDriver();
+  31          
+  32          void main()
+  33          {
+  34   1          EA = 1;
+  35   1          ENLED = 0;
+  36   1          ADDR3 = 1;
+  37   1          P2 = 0xF7;
+  38   1          ConfigTimer0(2);
+  39   1      
+  40   1          while (1)
+  41   1          {
+  42   2              if (StopwatchRefresh)
+  43   2              {
+  44   3                  StopwatchRefresh = 0;
+  45   3                  StopwatchDisplay();
+  46   3              }
+  47   2              KeyDriver();
+  48   2          }
   49   1      }
   50          
-  51          void StopMotor()
+  51          void ConfigTimer0(unsigned int ms)
   52          {
-  53   1          EA = 0;
-  54   1          beats = 0;
-C51 COMPILER V9.00   PRACTICE                                                              07/15/2019 22:53:05 PAGE 2   
+  53   1          unsigned long tmp;
+  54   1      
+C51 COMPILER V9.00   PRACTICE                                                              07/18/2019 22:15:08 PAGE 2   
 
-  55   1          EA = 1;
-  56   1      }
-  57          
-  58          void KeyAction(unsigned char keycode)
-  59          {
-  60   1          static bit dirMotor = 0;// motor direction
-  61   1      
-  62   1          if ((keycode>=0x30) && (keycode<=0x39))
-  63   1          {
-  64   2              if (dirMotor == 0)
-  65   2                  StartMotor(360*(keycode-0x30));
-  66   2              else
-  67   2                  StartMotor(-360*(keycode-0x30));
-  68   2              
-  69   2          }
-  70   1          else if (keycode == 0x26)
-  71   1          {
-  72   2              dirMotor = 0;// up -> clockwise
-  73   2          }
-  74   1          else if (keycode == 0x28)
-  75   1          {
-  76   2              dirMotor = 1;// down -> anticlockwise
-  77   2          }
-  78   1          else if (keycode == 0x25)
-  79   1          {
-  80   2              StartMotor(90);// left -> clockwise 90 degree
-  81   2          }
-  82   1          else if (keycode == 0x27)
-  83   1          {
-  84   2              StartMotor(-90);// right -> anticlockwise 90 degree
-  85   2          }
-  86   1          else if (keycode == 0x1B)
-  87   1          {
-  88   2              StopMotor();
-  89   2          }
-  90   1      }
-  91          
-  92          void KeyDriver()
-  93          {
-  94   1          // 判断哪个按键有动作,执行KeyAction()
-  95   1          unsigned char i, j;
-  96   1          static unsigned char backup[4][4] = 
-  97   1          {
-  98   1              {1,1,1,1}, {1,1,1,1}, {1,1,1,1}, {1,1,1,1}
-  99   1          };
- 100   1      
- 101   1          for (i=0; i<4; i++)
- 102   1          {
- 103   2              for (j=0; j<4; j++)
- 104   2              {
- 105   3                  if (backup[i][j] != KeySta[i][j])
- 106   3                  {
- 107   4                      if (backup[i][j] != 0)
- 108   4                      {
- 109   5                          KeyAction(KeyCodeMap[i][j]);
- 110   5                      }
- 111   4                      backup[i][j] = KeySta[i][j];
- 112   4                  }
- 113   3              }
- 114   2          }
- 115   1      }
- 116          
-C51 COMPILER V9.00   PRACTICE                                                              07/15/2019 22:53:05 PAGE 3   
+  55   1          tmp = 11059200 / 12;
+  56   1          tmp = (tmp * ms) / 1000;
+  57   1          tmp = 65536 - tmp;
+  58   1          tmp = tmp + 18;
+  59   1          T0RH = (unsigned char)(tmp>>8);
+  60   1          T0RL = (unsigned char)tmp;
+  61   1          TMOD &= 0xF0;
+  62   1          TMOD |= 0x01;
+  63   1          TH0 = T0RH;
+  64   1          TL0 = T0RL;
+  65   1          ET0 = 1;
+  66   1          TR0 = 1;
+  67   1      }
+  68          
+  69          void StopwatchDisplay()
+  70          {
+  71   1          signed char i;
+  72   1          unsigned char buf[4];
+  73   1      
+  74   1          LedBuff[0] = LedChar[DecimalPart%10];
+  75   1          LedBuff[1] = LedChar[DecimalPart/10];
+  76   1      
+  77   1          buf[0] = IntegerPart%10;
+  78   1          buf[1] = (IntegerPart/10)%10;
+  79   1          buf[2] = (IntegerPart/100)%10;
+  80   1          buf[3] = (IntegerPart/1000)%10;
+  81   1          for (i=3; i>=1; i--)
+  82   1          {
+  83   2              if (buf[i] == 0)
+  84   2                  LedBuff[i+2] = 0xFF;
+  85   2              else
+  86   2                  break;
+  87   2          }
+  88   1          for ( ; i>=0; i--)
+  89   1          {
+  90   2              LedBuff[i+2] = LedChar[buf[i]];
+  91   2          }
+  92   1          LedBuff[2] &= 0x7F;
+  93   1      }
+  94          
+  95          void StopwatchAction()
+  96          {
+  97   1          if (StopwatchRunning)
+  98   1              StopwatchRunning = 0;
+  99   1          else
+ 100   1              StopwatchRunning = 1;
+ 101   1      }
+ 102          
+ 103          void StopwatchReset()
+ 104          {
+ 105   1          StopwatchRunning = 0;
+ 106   1          DecimalPart = 0;
+ 107   1          IntegerPart = 0;
+ 108   1          StopwatchRefresh = 1;
+ 109   1      }
+ 110          
+ 111          void KeyDriver()
+ 112          {
+ 113   1          unsigned char i;
+ 114   1          static unsigned char backup[4] = {1,1,1,1};
+ 115   1      
+ 116   1          for (i=0; i<4; i++)
+C51 COMPILER V9.00   PRACTICE                                                              07/18/2019 22:15:08 PAGE 3   
 
- 117          void KeyScan()
- 118          {
- 119   1          
- 120   1          // 获取4次扫描值，执行KeyDriver()
- 121   1          unsigned char i;
- 122   1          static unsigned char keyout = 0;
- 123   1          static unsigned char keybuf[4][4] = 
- 124   1          {
- 125   1              {0xFF, 0xFF, 0xFF, 0xFF}, 
- 126   1              {0xFF, 0xFF, 0xFF, 0xFF}, 
- 127   1              {0xFF, 0xFF, 0xFF, 0xFF}, 
- 128   1              {0xFF, 0xFF, 0xFF, 0xFF}
- 129   1          };
- 130   1      
- 131   1          keybuf[keyout][0] = (keybuf[keyout][0] << 1) | KEY_IN_1;
- 132   1          keybuf[keyout][1] = (keybuf[keyout][1] << 1) | KEY_IN_2;
- 133   1          keybuf[keyout][2] = (keybuf[keyout][2] << 1) | KEY_IN_3;
- 134   1          keybuf[keyout][3] = (keybuf[keyout][3] << 1) | KEY_IN_4; 
- 135   1          
- 136   1          for (i=0; i<4; i++)
- 137   1          {
- 138   2              if ((keybuf[keyout][i] & 0x0F) == 0x00)
- 139   2                  KeySta[keyout][i] = 0;
- 140   2              else if ((keybuf[keyout][i] & 0x0F) == 0x0F)
- 141   2                  KeySta[keyout][i] = 1;
- 142   2          }
- 143   1          keyout++;
- 144   1          keyout = keyout & 0x03;
- 145   1          // 当keyout 等于4(100) 时，与0x03(011) 做与运算后，归零
- 146   1          switch(keyout)
- 147   1          {
- 148   2              // 先扫描KeyIn，后切换KeyOut
- 149   2              case 0: KEY_OUT_4 = 1; KEY_OUT_1 = 0;break;
- 150   2              case 1: KEY_OUT_1 = 1; KEY_OUT_2 = 0;break;
- 151   2              case 2: KEY_OUT_2 = 1; KEY_OUT_3 = 0;break;
- 152   2              case 3: KEY_OUT_3 = 1; KEY_OUT_4 = 0;break;
- 153   2              default: break;
- 154   2          }
- 155   1      }
- 156          
- 157          void TurnMotor()
- 158          {
- 159   1          unsigned char tmp;
- 160   1          static unsigned char index = 0;
- 161   1          unsigned char code BeatCode[8] = {
- 162   1              0xE, 0xC, 0xD, 0x9, 0xB, 0x3, 0x7, 0x6
- 163   1          };
- 164   1      
- 165   1          if (beats != 0)
- 166   1          {
- 167   2              if (beats > 0)
- 168   2              {
- 169   3                  index++;
- 170   3                  index = index & 0x07;
- 171   3                  beats--;
- 172   3              }
- 173   2              else
- 174   2              {
- 175   3                  index--;
- 176   3                  index = index & 0x07;
- 177   3                  beats++;
- 178   3              }
-C51 COMPILER V9.00   PRACTICE                                                              07/15/2019 22:53:05 PAGE 4   
+ 117   1          {
+ 118   2              if (backup[i] != KeySta[i])
+ 119   2              {
+ 120   3                  if (backup[i] != 0) 
+ 121   3                  {
+ 122   4                      if (i == 1)        
+ 123   4                          StopwatchReset();
+ 124   4                      else if (i == 2) 
+ 125   4                          StopwatchAction();
+ 126   4                  }
+ 127   3                  backup[i] = KeySta[i];
+ 128   3              }
+ 129   2          }
+ 130   1      }
+ 131          
+ 132          void KeyScan()
+ 133          {
+ 134   1          unsigned char i;
+ 135   1          static unsigned char keybuf[4] = {
+ 136   1              0xFF, 0xFF, 0xFF, 0xFF
+ 137   1          };
+ 138   1      
+ 139   1          keybuf[0] = (keybuf[0] << 1) | KEY1;
+ 140   1          keybuf[1] = (keybuf[1] << 1) | KEY2;
+ 141   1          keybuf[2] = (keybuf[2] << 1) | KEY3;
+ 142   1          keybuf[3] = (keybuf[3] << 1) | KEY4;
+ 143   1          for (i=0; i<4; i++)
+ 144   1          {
+ 145   2              if (keybuf[i] == 0x00)
+ 146   2                  KeySta[i] = 0;
+ 147   2              else if (keybuf[i] == 0xFF)
+ 148   2                  KeySta[i] = 1;
+ 149   2          }
+ 150   1      }
+ 151          
+ 152          void LedScan()
+ 153          {
+ 154   1          static unsigned char i = 0;
+ 155   1      
+ 156   1          P0 = 0xFF;
+ 157   1          P1 = (P1 & 0xF8) | i;
+ 158   1          P0 = LedBuff[i];
+ 159   1          if (i < 5)
+ 160   1              i++;
+ 161   1          else
+ 162   1              i = 0;
+ 163   1      }
+ 164          
+ 165          void StopwatchCount()
+ 166          {
+ 167   1          if (StopwatchRunning)
+ 168   1          {
+ 169   2              DecimalPart++;
+ 170   2              if (DecimalPart >= 250)
+ 171   2              {
+ 172   3                  DecimalPart = 0;
+ 173   3                  IntegerPart++;
+ 174   3                  if (IntegerPart >=10000)
+ 175   3                      IntegerPart = 0;
+ 176   3              }
+ 177   2              StopwatchRefresh = 1;
+ 178   2          }
+C51 COMPILER V9.00   PRACTICE                                                              07/18/2019 22:15:08 PAGE 4   
 
- 179   2              tmp = P1;
- 180   2              tmp = tmp & 0xF0;
- 181   2              tmp = tmp | BeatCode[index];
- 182   2              P1 = tmp;
- 183   2          }
- 184   1          else
- 185   1              P1 = P1 | 0x0F;
- 186   1      }
- 187          
- 188          void InterruptTimer0() interrupt 1
- 189          {
- 190   1          static bit div = 0;
- 191   1      
- 192   1          TH0 = 0xFC;
- 193   1          TL0 = 0x67;
- 194   1          KeyScan();
- 195   1          div = ~div;
- 196   1          if (div == 1)
- 197   1              TurnMotor();// 定时1ms, 步进电机需要2ms
- 198   1      }
+ 179   1      }
+ 180          
+ 181          void InterruptTimer0() interrupt 1
+ 182          {
+ 183   1          static unsigned char tmr10ms = 0;
+ 184   1      
+ 185   1          TH0 = T0RH;
+ 186   1          TL0 = T0RL;
+ 187   1          LedScan();
+ 188   1          KeyScan();
+ 189   1          tmr10ms++;
+ 190   1          if (tmr10ms >= 2)
+ 191   1          {
+ 192   2              tmr10ms = 0;
+ 193   2              StopwatchCount();
+ 194   2          }
+ 195   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    710    ----
-   CONSTANT SIZE    =     24    ----
+   CODE SIZE        =    570    ----
+   CONSTANT SIZE    =     16    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     54       7
+   DATA SIZE        =     25       8
    IDATA SIZE       =   ----    ----
    BIT SIZE         =      2    ----
 END OF MODULE INFORMATION.

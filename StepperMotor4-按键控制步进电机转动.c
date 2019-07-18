@@ -22,7 +22,7 @@ unsigned char KeySta[4][4] =
         {1,1,1,1}, {1,1,1,1}, {1,1,1,1}, {1,1,1,1}
     };
 
-unsigned long beats = 0;
+signed long beats = 0;// 有符号数
 
 void KeyDriver();
 
@@ -65,7 +65,6 @@ void KeyAction(unsigned char keycode)
             StartMotor(360*(keycode-0x30));
         else
             StartMotor(-360*(keycode-0x30));
-        
     }
     else if (keycode == 0x26)
     {

@@ -186,10 +186,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>44</ColumnNumber>
+      <ColumnNumber>30</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>90</TopLine>
-      <CurrentLine>90</CurrentLine>
+      <TopLine>165</TopLine>
+      <CurrentLine>170</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\practice.c</PathWithFileName>
       <FilenameWithoutPath>practice.c</FilenameWithoutPath>
@@ -1541,9 +1541,9 @@
       <Documents>
         <Doc>
           <Name>..\practice.c</Name>
-          <ColumnNumber>44</ColumnNumber>
-          <TopLine>90</TopLine>
-          <CurrentLine>90</CurrentLine>
+          <ColumnNumber>30</ColumnNumber>
+          <TopLine>165</TopLine>
+          <CurrentLine>170</CurrentLine>
         </Doc>
       </Documents>
     </MDIGroup>
