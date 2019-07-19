@@ -167,7 +167,7 @@ void StopwatchCount()
     if (StopwatchRunning)
     {
         DecimalPart++;
-        if (DecimalPart >= 250)
+        if (DecimalPart >= 100)
         {
             DecimalPart = 0;
             IntegerPart++;
@@ -187,7 +187,7 @@ void InterruptTimer0() interrupt 1
     LedScan();
     KeyScan();
     tmr10ms++;
-    if (tmr10ms >= 2)
+    if (tmr10ms >= 5)
     {
         tmr10ms = 0;
         StopwatchCount();
