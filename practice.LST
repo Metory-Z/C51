@@ -1,4 +1,4 @@
-C51 COMPILER V9.00   PRACTICE                                                              07/19/2019 20:31:46 PAGE 1   
+C51 COMPILER V9.00   PRACTICE                                                              07/20/2019 21:47:59 PAGE 1   
 
 
 C51 COMPILER V9.00, COMPILATION OF MODULE PRACTICE
@@ -8,218 +8,85 @@ COMPILER INVOKED BY: D:\Exe\C51+Keil4ÕÍ√¿∞Ê\C51\BIN\C51.EXE ..\practice.c BROWSE
 
 line level    source
 
-   1          #include<reg52.h>
+   1          #include <reg52.h>
    2          
-   3          sbit ADDR3 = P1^3;
-   4          sbit ENLED = P1^4;
-   5          sbit KEY1=P2^4;
-   6          sbit KEY2=P2^5;
-   7          sbit KEY3=P2^6;
-   8          sbit KEY4=P2^7;
+   3          unsigned char Send[] = "hello from 51\n";
+   4          unsigned char Recieve[] = "hello from PC";
+   5          unsigned char Tmp;
+   6          unsigned char T0RH = 0;
+   7          unsigned char T0RL = 0;
+   8          bit match = 1;
    9          
-  10          unsigned char code LedChar[] = {
-  11                  0xC0,0xF9,0xA4,0xB0,0x99,0x92,0x82,0xF8,
-  12                  0x80,0x90,0x88,0x83,0xC6,0xA1,0x86,0x8E
-  13          };
-  14          unsigned char LedBuff[6] = {
-  15                  0xFF,0xFF,0xFF,0xFF,0xFF,0xFF
-  16          };
-  17          unsigned char KeySta[4]={
-  18              1,1,1,1
-  19          };
-  20          
-  21          bit StopwatchRunning = 0;
-  22          bit StopwatchRefresh = 1;
-  23          unsigned char DecimalPart = 0;// Â∞èÊï∞ÈÉ®ÂàÜ
-  24          unsigned int IntegerPart = 0;
-  25          unsigned char T0RH = 0;
-  26          unsigned char T0RL = 0;
-  27          
-  28          void ConfigTimer0(unsigned int ms);
-  29          void StopwatchDisplay();
-  30          void KeyDriver();
-  31          
-  32          void main()
-  33          {
-  34   1          EA = 1;
-  35   1          ENLED = 0;
-  36   1          ADDR3 = 1;
-  37   1          P2 = 0xF7;
-  38   1          ConfigTimer0(2);
-  39   1      
-  40   1          while (1)
-  41   1          {
-  42   2              if (StopwatchRefresh)
-  43   2              {
-  44   3                  StopwatchRefresh = 0;
-  45   3                  StopwatchDisplay();
-  46   3              }
-  47   2              KeyDriver();
-  48   2          }
-  49   1      }
-  50          
-  51          void ConfigTimer0(unsigned int ms)
-  52          {
-  53   1          unsigned long tmp;
-  54   1      
-C51 COMPILER V9.00   PRACTICE                                                              07/19/2019 20:31:46 PAGE 2   
+  10          void UARTSend();
+  11          void UARTSend(unsigned char Byte);
+  12          void ConfigTimer0(unsigned int ms);
+  13          void ConfigUART();
+  14          
+  15          void main()
+  16          {
+  17   1          unsigned int i;
+  18   1      
+  19   1          EA  = 1;
+  20   1          ConfigUART();
+  21   1          while (match)
+  22   1          {
+  23   2              if (Tmp != 0)
+  24   2              {
+  25   3                  UARTSend();
+  26   3                  match = 0;
+  27   3              } 
+  28   2          } 
+  29   1      }
+*** WARNING C280 IN LINE 17 OF ..\PRACTICE.C: 'i': unreferenced local variable
+  30          
+  31          void UARTSend()
+  32          {
+  33   1          unsigned char i;
+  34   1        
+  35   1          for (i=0; i<14; i++)
+  36   1          {
+  37   2              ES = 0;
+  38   2              TI = 0;
+  39   2              SBUF = Send[i];
+  40   2              while(!TI);
+  41   2              TI = 0;
+  42   2              ES = 1;
+  43   2          }  
+  44   1      }
+  45          
+  46          void ConfigUART()
+  47          {
+  48   1          SCON = 0x50;
+  49   1          TMOD &= 0x0F;
+  50   1          TMOD |= 0x20;
+  51   1          TH1 = 0xFD;
+  52   1          TL1 = 0xFD;
+  53   1          ET1 = 0;
+C51 COMPILER V9.00   PRACTICE                                                              07/20/2019 21:47:59 PAGE 2   
 
-  55   1          tmp = 11059200 / 12;
-  56   1          tmp = (tmp * ms) / 1000;
-  57   1          tmp = 65536 - tmp;
-  58   1          tmp = tmp + 18;
-  59   1          T0RH = (unsigned char)(tmp>>8);
-  60   1          T0RL = (unsigned char)tmp;
-  61   1          TMOD &= 0xF0;
-  62   1          TMOD |= 0x01;
-  63   1          TH0 = T0RH;
-  64   1          TL0 = T0RL;
-  65   1          ET0 = 1;
-  66   1          TR0 = 1;
-  67   1      }
-  68          
-  69          void StopwatchDisplay()
-  70          {
-  71   1          signed char i;
-  72   1          unsigned char buf[4];
-  73   1      
-  74   1          LedBuff[0] = LedChar[DecimalPart%10];
-  75   1          LedBuff[1] = LedChar[DecimalPart/10];
-  76   1      
-  77   1          buf[0] = IntegerPart%10;
-  78   1          buf[1] = (IntegerPart/10)%10;
-  79   1          buf[2] = (IntegerPart/100)%10;
-  80   1          buf[3] = (IntegerPart/1000)%10;
-  81   1          for (i=3; i>=1; i--)
-  82   1          {
-  83   2              if (buf[i] == 0)
-  84   2                  LedBuff[i+2] = 0xFF;
-  85   2              else
-  86   2                  break;
-  87   2          }
-  88   1          for ( ; i>=0; i--)
-  89   1          {
-  90   2              LedBuff[i+2] = LedChar[buf[i]];
-  91   2          }
-  92   1          LedBuff[2] &= 0x7F;
-  93   1      }
-  94          
-  95          void StopwatchAction()
-  96          {
-  97   1          if (StopwatchRunning)
-  98   1              StopwatchRunning = 0;
-  99   1          else
- 100   1              StopwatchRunning = 1;
- 101   1      }
- 102          
- 103          void StopwatchReset()
- 104          {
- 105   1          StopwatchRunning = 0;
- 106   1          DecimalPart = 0;
- 107   1          IntegerPart = 0;
- 108   1          StopwatchRefresh = 1;
- 109   1      }
- 110          
- 111          void KeyDriver()
- 112          {
- 113   1          unsigned char i;
- 114   1          static unsigned char backup[4] = {1,1,1,1};
- 115   1      
- 116   1          for (i=0; i<4; i++)
-C51 COMPILER V9.00   PRACTICE                                                              07/19/2019 20:31:46 PAGE 3   
-
- 117   1          {
- 118   2              if (backup[i] != KeySta[i])
- 119   2              {
- 120   3                  if (backup[i] != 0) 
- 121   3                  {
- 122   4                      if (i == 1)        
- 123   4                          StopwatchReset();
- 124   4                      else if (i == 2) 
- 125   4                          StopwatchAction();
- 126   4                  }
- 127   3                  backup[i] = KeySta[i];
- 128   3              }
- 129   2          }
- 130   1      }
- 131          
- 132          void KeyScan()
- 133          {
- 134   1          unsigned char i;
- 135   1          static unsigned char keybuf[4] = {
- 136   1              0xFF, 0xFF, 0xFF, 0xFF
- 137   1          };
- 138   1      
- 139   1          keybuf[0] = (keybuf[0] << 1) | KEY1;
- 140   1          keybuf[1] = (keybuf[1] << 1) | KEY2;
- 141   1          keybuf[2] = (keybuf[2] << 1) | KEY3;
- 142   1          keybuf[3] = (keybuf[3] << 1) | KEY4;
- 143   1          for (i=0; i<4; i++)
- 144   1          {
- 145   2              if (keybuf[i] == 0x00)
- 146   2                  KeySta[i] = 0;
- 147   2              else if (keybuf[i] == 0xFF)
- 148   2                  KeySta[i] = 1;
- 149   2          }
- 150   1      }
- 151          
- 152          void LedScan()
- 153          {
- 154   1          static unsigned char i = 0;
- 155   1      
- 156   1          P0 = 0xFF;
- 157   1          P1 = (P1 & 0xF8) | i;
- 158   1          P0 = LedBuff[i];
- 159   1          if (i < 5)
- 160   1              i++;
- 161   1          else
- 162   1              i = 0;
- 163   1      }
- 164          
- 165          void StopwatchCount()
- 166          {
- 167   1          if (StopwatchRunning)
- 168   1          {
- 169   2              DecimalPart++;
- 170   2              if (DecimalPart >= 100)
- 171   2              {
- 172   3                  DecimalPart = 0;
- 173   3                  IntegerPart++;
- 174   3                  if (IntegerPart >=10000)
- 175   3                      IntegerPart = 0;
- 176   3              }
- 177   2              StopwatchRefresh = 1;
- 178   2          }
-C51 COMPILER V9.00   PRACTICE                                                              07/19/2019 20:31:46 PAGE 4   
-
- 179   1      }
- 180          
- 181          void InterruptTimer0() interrupt 1
- 182          {
- 183   1          static unsigned char tmr10ms = 0;
- 184   1      
- 185   1          TH0 = T0RH;
- 186   1          TL0 = T0RL;
- 187   1          LedScan();
- 188   1          KeyScan();
- 189   1          tmr10ms++;
- 190   1          if (tmr10ms >= 5)
- 191   1          {
- 192   2              tmr10ms = 0;
- 193   2              StopwatchCount();
- 194   2          }
- 195   1      }
+  54   1          TR1 = 1;
+  55   1          ES  = 1;
+  56   1      }
+  57          
+  58          void InterruptUART() interrupt 4
+  59          {
+  60   1              if (RI)
+  61   1          {
+  62   2              RI = 0;
+  63   2              Tmp = SBUF;
+  64   2          }
+  65   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    570    ----
-   CONSTANT SIZE    =     16    ----
+   CODE SIZE        =     76    ----
+   CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     25       8
+   DATA SIZE        =     32       2
    IDATA SIZE       =   ----    ----
-   BIT SIZE         =      2    ----
+   BIT SIZE         =      1    ----
 END OF MODULE INFORMATION.
 
 
-C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
